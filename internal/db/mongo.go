@@ -11,6 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// NewMongoAndRedisCache creates a new instance of MongoAndRedisCache with the provided connection strings.
+// It establishes connections to both MongoDB and Redis servers and returns an error if either connection fails.
 func NewMongoAndRedisCache(mongoConnectionString, redisConnectionString string) (*MongoAndRedisCache, error) {
 	ctx := context.Background()
 	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoConnectionString))
@@ -33,6 +35,9 @@ func NewMongoAndRedisCache(mongoConnectionString, redisConnectionString string) 
 	}, nil
 }
 
+// UpsertPreferences updates or inserts user preferences for a specific application.
+// It stores the preferences in both MongoDB and Redis for caching.
+// The function returns an error if either the MongoDB operation or Redis caching fails.
 func (m *MongoAndRedisCache) UpsertPreferences(ctx context.Context, username, appName string, preferences map[string]string) error {
 	collection := m.mongoClient.Database("preferences").Collection("user_preferences")
 
@@ -68,6 +73,10 @@ func (m *MongoAndRedisCache) UpsertPreferences(ctx context.Context, username, ap
 	return nil
 }
 
+// GetPreferences retrieves user preferences for a specific application.
+// If fetchFromCache is true, it first attempts to retrieve from Redis cache.
+// If cache miss or fetchFromCache is false, it retrieves from MongoDB and updates the cache.
+// Returns the preferences map and any error encountered during the operation.
 func (m *MongoAndRedisCache) GetPreferences(ctx context.Context, username, appName string, fetchFromCache bool) (map[string]string, error) {
 	collection := m.mongoClient.Database("preferences").Collection("user_preferences")
 	var preferences map[string]string
@@ -114,12 +123,15 @@ func (m *MongoAndRedisCache) GetPreferences(ctx context.Context, username, appNa
 	return res.Preferences, nil
 }
 
+// PreferencesRecord represents the structure of a user preferences document in MongoDB.
 type PreferencesRecord struct {
-	AppName     string            `bson:"appName"`
-	Username    string            `bson:"username"`
-	Preferences map[string]string `bson:"preferences"`
+	AppName     string            `bson:"appName"`     // Name of the application
+	Username    string            `bson:"username"`    // Username of the user
+	Preferences map[string]string `bson:"preferences"` // Map of preference key-value pairs
 }
+
+// MongoAndRedisCache handles database operations with MongoDB and Redis caching.
 type MongoAndRedisCache struct {
-	mongoClient *mongo.Client
-	redisClient *redis.Client
+	mongoClient *mongo.Client // MongoDB client connection
+	redisClient *redis.Client // Redis client connection
 }

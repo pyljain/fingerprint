@@ -7,6 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// SetPreferencesForApp handles POST requests to update preferences for a specific application.
+// It expects username and appName parameters in the URL path and a JSON body containing preferences.
+// The handler removes username and appName from the preferences map if present.
+// Returns an empty response on success or an error if the operation fails.
 func SetPreferencesForApp(c echo.Context) error {
 	username := c.Param("username")
 	appName := c.Param("appName")
@@ -30,6 +34,9 @@ func SetPreferencesForApp(c echo.Context) error {
 	return c.String(http.StatusOK, "")
 }
 
+// SetPreferences handles POST requests to update all preferences for a user.
+// Currently returns a placeholder response.
+// TODO: Implement full functionality
 func SetPreferences(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
 }
