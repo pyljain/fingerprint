@@ -109,16 +109,3 @@ go run main.go
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details
-```
-
-This README includes:
-1. A clear overview of the project
-2. A sequence diagram showing the flow of data
-3. API endpoint documentation
-4. Setup instructions
-5. Data structure explanations
-6. Key features
-7. Error handling information
-8. Contributing guidelines
-
-The sequence diagram clearly shows how requests flow through the system, including the caching layer and database interactions. Let me know if you'd like any modifications or additional sections added to the README.
